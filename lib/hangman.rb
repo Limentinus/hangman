@@ -3,6 +3,7 @@ class Hangman
     @words = File.readlines('google-10000-english-no-swears.txt')
     @word_to_guess
     @guessed_letters = ''
+    @wrong_guesses = ''
   end
 
   def choose_random_word
@@ -21,9 +22,15 @@ class Hangman
     end.join(" ") 
   end
 
+  def add_wrong_letters(letter)
+    if !@word_to_guess.chars.include?(letter)
+      @wrong_guesses << letter
+    end
+  end
+
   def check_game_over
     @word_to_guess.chars.map do |c|
-      if @guessed_letters.length > 8
+      if @wrong_guesses.length > 8
         puts "You lose the word was #{@word_to_guess}"
         return true
       elsif @word_to_guess.chars.all? {|c| @guessed_letters.include?(c)}
@@ -36,14 +43,24 @@ class Hangman
 
   def play_game
     choose_random_word
-    puts "Its hangman."
+    puts "Its hangman. Guess a letter from a to z. Type exit to exit the game. Type save to save it."
     while true
       puts display_game_state
       puts "Guessed letters: #{@guessed_letters}"
       print "Enter a letter: "
-      letter = gets.strip
-      @guessed_letters << letter
+      input = gets.strip.downcase
 
+      if input == "exit"
+        puts "You've exited the game"
+        break
+      # elsif input == "save"
+      #   save_game(@word_to_guess, @guessed_letters)
+      elsif (/^[a-z]$/ =~ input).nil?
+        puts "Thats not a valid guess. Only type a single letter from a to z"
+        next
+      end
+      @guessed_letters << input
+      add_wrong_letters(input)
       if check_game_over
         break
       end
