@@ -1,4 +1,5 @@
 class Hangman
+  include Comparable
   def initialize
     @words = File.readlines('google-10000-english-no-swears.txt')
     @word_to_guess
@@ -7,9 +8,17 @@ class Hangman
   end
 
   def choose_random_word
-    @word_to_guess = @words.sample do |word|
-      word.length.between?(5, 12).sample
-    end.strip
+    while true
+      maybe = @words.sample.strip
+      puts maybe.length
+      if maybe.length >=5 && maybe.length <= 12
+        @word_to_guess = maybe
+        puts @word_to_guess
+        break
+      else
+        next
+      end
+    end
   end
 
   def display_game_state
@@ -59,21 +68,17 @@ class Hangman
         puts "Thats not a valid guess. Only type a single letter from a to z"
         next
       end
+
       @guessed_letters << input
       add_wrong_letters(input)
       if check_game_over
         break
       end
   
-      # puts "Do you want to save the game and quit? (y/n)"
-      # if gets.strip == "y"
-      #   save_game(word, letters_guessed)
-      #   break
-      # end
     end
 
   end
   
 end
 
-Hangman.new.play_game
+puts Hangman.new.play_game
