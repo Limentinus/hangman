@@ -36,13 +36,27 @@ class Hangman
 
   def play_game
     choose_random_word
-    puts "Its hangman. 
+    puts "Its hangman."
     while true
+      puts display_game_state
+      puts "Guessed letters: #{@guessed_letters}"
+      print "Enter a letter: "
+      letter = gets.strip
+      @guessed_letters << letter
 
-    Guess the word by typing in a letter or save the game by typing save. To exit, type exit."
-    puts display_game_state
+      if check_game_over
+        break
+      end
+  
+      # puts "Do you want to save the game and quit? (y/n)"
+      # if gets.strip == "y"
+      #   save_game(word, letters_guessed)
+      #   break
+      # end
+    end
+
   end
   
 end
 
-Hangman.new.play_game 
+Hangman.new.play_game
