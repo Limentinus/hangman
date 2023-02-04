@@ -1,3 +1,5 @@
+require 'json'
+
 class Hangman
   def initialize
     @words = File.readlines('google-10000-english-no-swears.txt')
@@ -50,14 +52,14 @@ class Hangman
 
 def save_game(word, letters_guessed)
   File.open("saved_game.txt", "w") do |f|
-     f.puts Marshal.dump([@word_to_guess, @guessed_letters, @wrong_guesses])
+     f.puts JSON.dump([@word_to_guess, @guessed_letters, @wrong_guesses])
   end
 end
 
 
 def load_game
   game_state = File.read("saved_game.txt")
-  Marshal.load(game_state)
+  JSON.load(game_state)
 end
 
   def play_game
