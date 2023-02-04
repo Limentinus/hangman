@@ -9,10 +9,8 @@ class Hangman
   def choose_random_word
     while true
       maybe = @words.sample.strip
-      puts maybe.length
       if maybe.length >=5 && maybe.length <= 12
         @word_to_guess = maybe
-        puts @word_to_guess
         break
       else
         next
@@ -54,7 +52,7 @@ class Hangman
     puts "Its hangman. Guess a letter from a to z. Type exit to exit the game. Type save to save it."
     while true
       puts display_game_state
-      puts "Guessed letters: #{@guessed_letters}"
+      puts "Wrong guesses: #{@wrong_guesses}"
       print "Enter a letter: "
       input = gets.strip.downcase
 
