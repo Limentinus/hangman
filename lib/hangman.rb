@@ -1,5 +1,4 @@
 class Hangman
-  include Comparable
   def initialize
     @words = File.readlines('google-10000-english-no-swears.txt')
     @word_to_guess
