@@ -2,7 +2,7 @@ class Hangman
   def initialize
     @words = File.readlines('google-10000-english-no-swears.txt')
     @word_to_guess
-    @guessed_letters = ''
+    @guessed_letters = []
     @wrong_guesses = ''
   end
 
@@ -29,7 +29,7 @@ class Hangman
   end
 
   def add_wrong_letters(letter)
-    if !@word_to_guess.chars.include?(letter)
+    unless @word_to_guess.chars.include?(letter) or letter == "save"
       @wrong_guesses << letter
     end
   end
@@ -47,8 +47,35 @@ class Hangman
     false
   end
 
+
+def save_game(word, letters_guessed)
+  File.open("saved_game.txt", "w") do |f|
+     f.puts Marshal.dump([@word_to_guess, @guessed_letters, @wrong_guesses])
+  end
+end
+
+
+def load_game
+  game_state = File.read("saved_game.txt")
+  Marshal.load(game_state)
+end
+
   def play_game
-    choose_random_word
+
+    
+    if File.exists?("saved_game.txt")
+      puts "A saved game was found! Do you want to resume the game? (y/n)"
+      if gets.strip == "y"
+        @word_to_guess, @guessed_letters, @wrong_guesses = load_game
+      else
+        choose_random_word
+        @guessed_letters = []
+      end
+    else
+      choose_random_word
+      @guessed_letters = []
+    end
+
     puts "Its hangman. Guess a letter from a to z. Type exit to exit the game. Type save to save it."
     while true
       puts display_game_state
@@ -59,8 +86,8 @@ class Hangman
       if input == "exit"
         puts "You've exited the game"
         break
-      # elsif input == "save"
-      #   save_game(@word_to_guess, @guessed_letters)
+      elsif input == "save"
+        save_game(@word_to_guess, @guessed_letters)
       elsif (/^[a-z]$/ =~ input).nil?
         puts "Thats not a valid guess. Only type a single letter from a to z"
         next
